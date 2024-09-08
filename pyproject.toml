@@ -1,0 +1,49 @@
+[project]
+name = "ScreenCatcher"
+version = "0.1.0"
+description = "A plugin that takes screenshots on the PC side and opens in browser."
+authors = [
+    { name = "GoldenSupremeSaltedFish", email = "167095167+GoldenSupremeSaltedFish@users.noreply.github.com" },
+    { name = "Dragon1573", email = "49941141+Dragon1573@users.noreply.github.com" },
+]
+requires-python = "==3.12.*"
+readme = "README.md"
+license = { text = "MIT" }
+dependencies = [
+    "pillow>=10.4.0",
+    "opencv-python>=4.10.0.84",
+    "numpy>=2.1.1",
+    "pyzbar>=0.1.9",
+]
+
+[project.optional-dependencies]
+build = [
+]
+
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project.gui-scripts]
+ScreenCatcher = "screencatcher.ScreenCatcher:main"
+
+[tool.ruff]
+line-length = 120
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "ruff>=0.6.4",
+    "mypy>=1.11.2",
+    "pyinstaller>=6.10.0",
+]
+
+[tool.pdm.scripts]
+format = "pythonw -m ruff format --verbose src/"
+lint = "pythonw -m ruff check -v src/"
+check = "pythonw -m mypy -v src/"
+build = "pyinstaller -F src/screencatcher/ScreenCatcher.py"
+
