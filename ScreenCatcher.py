@@ -23,7 +23,7 @@ def recognizeQrCode():
         
         if qrData.startswith('http://weixin.qq.com'):
             resultTextbox.insert(tk.END, f"这是微信的链接，目前无法支持打开 {qrData}\n")
-
+            continue
         # 如果二维码数据是一个URL，自动打开浏览器
         elif qrData.startswith('http'):
             resultTextbox.insert(tk.END, f"正在打开浏览器: {qrData}\n")
