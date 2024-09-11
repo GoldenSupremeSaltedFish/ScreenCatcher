@@ -1,6 +1,6 @@
 [project]
 name = "ScreenCatcher"
-version = "0.1.0"
+version = "0.1.1"
 description = "A plugin that takes screenshots on the PC side and opens in browser."
 authors = [
     { name = "GoldenSupremeSaltedFish", email = "167095167+GoldenSupremeSaltedFish@users.noreply.github.com" },
@@ -38,12 +38,11 @@ distribution = true
 dev = [
     "ruff>=0.6.4",
     "mypy>=1.11.2",
-    "pyinstaller>=6.10.0",
+    "types-keyboard>=0.13.2.20240310",
 ]
 
 [tool.pdm.scripts]
-format = "pythonw -m ruff format --verbose src/"
-lint = "pythonw -m ruff check -v src/"
-check = "pythonw -m mypy -v src/"
-build = "pyinstaller -F src/screencatcher/ScreenCatcher.py"
-
+format = { cmd = "pythonw -m ruff format --verbose src/", help = "Format code with Ruff" }
+lint = { cmd = "pythonw -m ruff check -v src/", help = "Lint code with Ruff" }
+check = { cmd = "pythonw -m mypy -v src/", help = "Check code with Mypy" }
+ci = { composite = ["format", "lint", "check"], help = "Run a complete process of Continuous Integration" }

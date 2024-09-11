@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+name: Python package
+
+on:
+  release:
+    published:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup PDM
+      uses: pdm-project/setup-pdm@v4
+      with:
+        python-version: 3.12
+        architecture: x64
+        cache: true
+    - name: Install dependencies
+      run: |
+        pdm install --frozen-lockfile
+    - name: Run a complete CI
+      run: |
+        pdm run --verbose ci
+    - name: Build artifacts
+      run: |
+        pdm build --verbose
+    - name: Upload releases
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          dist/*
