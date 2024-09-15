@@ -7,14 +7,26 @@ import numpy as np
 import webbrowser
 import keyboard
 import threading
-
+import time
 # 截取屏幕
 def captureScreen():
     screen = ImageGrab.grab()
     screenNp = np.array(screen)
     return cv2.cvtColor(screenNp, cv2.COLOR_RGB2BGR)
+# 防抖处理
+def debounce(wait):
+    def decorator(fn):
+        last_call = [0]
+        def debounced(*args, **kwargs):
+            now = time.time()
+            if now - last_call[0] >= wait:
+                last_call[0] = now
+                return fn(*args, **kwargs)
+        return debounced
+    return decorator
 
 # 识别二维码并在文本框中显示
+@debounce(0.5)  # 防抖时间为0.5秒
 def recognizeQrCode():
     screenImage = captureScreen()
     qrCodes = decode(screenImage)
@@ -37,7 +49,7 @@ def recognizeQrCode():
     if not qrCodes:
         resultTextbox.insert(tk.END, "未识别到二维码\n")
 
-# 创建简单的GUI
+# 创建简单的GUI（缺乏防抖）
 def create_gui():
     global resultTextbox
     rootWindow = tk.Tk()
@@ -63,9 +75,14 @@ def start_keyboard_listener():
     keyboard.add_hotkey('alt+q', recognizeQrCode)  # 监听 Win+Q 组合键
     keyboard.wait('esc')  # 按 Esc 键退出程序
 
-# 创建线程来运行快捷键监听
-keyboard_thread = threading.Thread(target=start_keyboard_listener, daemon=True)
-keyboard_thread.start()
+def main():
+    # 创建线程来运行快捷键监听
+    keyboard_thread = threading.Thread(target=start_keyboard_listener, daemon=True)
+    keyboard_thread.start()
+    # 根本不需要gui，我们需要一个灰色底色的全屏让用户进行选择然后进行扫码
+    # 可选取的文字识别（全屏）
+    # 运行GUI程序
+    create_gui()
 
-# 运行GUI程序
-create_gui()
+if __name__ == "__main__":
+    main()
