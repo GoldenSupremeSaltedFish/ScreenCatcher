@@ -1,6 +1,6 @@
 [project]
 name = "ScreenCatcher"
-version = "0.1.0"
+version = "0.2.2"
 description = "A plugin that takes screenshots on the PC side and opens in browser."
 authors = [
     { name = "GoldenSupremeSaltedFish", email = "167095167+GoldenSupremeSaltedFish@users.noreply.github.com" },
@@ -38,7 +38,8 @@ distribution = true
 dev = [
     "ruff>=0.6.4",
     "mypy>=1.11.2",
-    "pyinstaller>=6.10.0",
+    "types-keyboard>=0.13.2.20240310",
+    "types-pywin32>=306.0.0.20240822",
 ]
 
 [tool.pdm.scripts]
