@@ -57,19 +57,16 @@ class SelectionArea:
         return self.area_box.isNone()
 
     def setStartPoint(self, x, y):
-        self.canvas.delete('area', 'lt_txt', 'rb_txt')
+        self.canvas.delete("area", "lt_txt", "rb_txt")
         self.area_box.setStart(x, y)
-        self.canvas.create_text(
-            x, y - 10, text=f'({x}, {y})', fill='red', tag='lt_txt')
+        self.canvas.create_text(x, y - 10, text=f"({x}, {y})", fill="red", tag="lt_txt")
 
     def updateEndPoint(self, x, y):
         self.area_box.setEnd(x, y)
-        self.canvas.delete('area', 'rb_txt')
+        self.canvas.delete("area", "rb_txt")
         box_area = self.area_box.box()
-        self.canvas.create_rectangle(
-            *box_area, fill='black', outline='red', width=2, tags="area")
-        self.canvas.create_text(
-            x, y + 10, text=f'({x}, {y})', fill='red', tag='rb_txt')
+        self.canvas.create_rectangle(*box_area, fill="black", outline="red", width=2, tags="area")
+        self.canvas.create_text(x, y + 10, text=f"({x}, {y})", fill="red", tag="rb_txt")
 
 
 class ScreenCapture:
@@ -83,7 +80,7 @@ class ScreenCapture:
         screen_size = get_screen_size()
         screen_scale_rate = round(real_resolution[0] / screen_size[0], 2)
         self.screenshot = ScreenShot(screen_scale_rate, self.queue)
-        
+
     def get_result(self):
         try:
             result = self.queue.get(timeout=10)  # 设置超时时间为 10 秒
@@ -100,7 +97,7 @@ class ScreenCapture:
 class ScreenShot:
     def __init__(self, screen_scale_rate, queue):
         self.win = tk.Tk()
-        self.win.attributes('-alpha', 0.25)
+        self.win.attributes("-alpha", 0.25)
         self.win.overrideredirect(True)
 
         self.width = self.win.winfo_screenwidth()
@@ -111,11 +108,11 @@ class ScreenShot:
         self.queue = queue
 
         # 设置绑定键盘和鼠标事件
-        self.win.bind('<KeyPress-Escape>', self.exit)
-        self.win.bind('<KeyPress-Return>', self.confirmScreenShot)
-        self.win.bind('<Button-1>', self.selectStart)
-        self.win.bind('<ButtonRelease-1>', self.selectDone)
-        self.win.bind('<Motion>', self.changeSelectionArea)
+        self.win.bind("<KeyPress-Escape>", self.exit)
+        self.win.bind("<KeyPress-Return>", self.confirmScreenShot)
+        self.win.bind("<Button-1>", self.selectStart)
+        self.win.bind("<ButtonRelease-1>", self.selectDone)
+        self.win.bind("<Motion>", self.changeSelectionArea)
 
         self.canvas = tk.Canvas(self.win, width=self.width, height=self.height)
         self.canvas.pack()
@@ -128,7 +125,7 @@ class ScreenShot:
         self.queue.put(None)  # 退出时放入 None 表示没有截图
 
     def clear(self):
-        self.canvas.delete('area', 'lt_txt', 'rb_txt')
+        self.canvas.delete("area", "lt_txt", "rb_txt")
 
     def captureImage(self):
         if self.area.empty():
