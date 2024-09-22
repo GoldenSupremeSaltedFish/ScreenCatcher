@@ -42,8 +42,15 @@ dev = [
 ]
 
 [tool.pdm.scripts]
-format = "pythonw -m ruff format --verbose src/"
-lint = "pythonw -m ruff check -v src/"
-check = "pythonw -m mypy -v src/"
-build = "pyinstaller -F src/screencatcher/ScreenCatcher.py"
+format.cmd = "python -m ruff format src/"
+format.help = "Reformat code using Ruff."
+
+lint.cmd = "python -m ruff check src/"
+lint.help = "Lint code using Ruff."
+
+check.cmd = "python -m mypy src/"
+check.help = "Perform a static type checking using Mypy."
+
+ci.composite = ["format", "lint", "check"]
+ci.help = "A continuous integration wrapper for doing all required checks."
 
