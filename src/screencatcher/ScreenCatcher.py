@@ -33,7 +33,7 @@ def recognizeQrCode():
         resultTextbox.insert(tk.END, "没有截屏\n")
         return
 
-    img.show()
+    # img.show()
     threading.Thread(target=process_qr_code, args=(img,), daemon=True).start()
 
 # 处理二维码识别
