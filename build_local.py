@@ -49,8 +49,26 @@ def main():
         print("🧹 清理之前的构建文件...")
         shutil.rmtree("build")
     
-    # 构建可执行文件
-    if not run_command("pyinstaller --clean ScreenCatcher.spec", "构建可执行文件"):
+    # 构建可执行文件 - 尝试不同的方法
+    build_success = False
+    
+    # 方法1: 使用 .spec 文件
+    if os.path.exists("ScreenCatcher.spec"):
+        print("🔧 使用 ScreenCatcher.spec 文件构建...")
+        build_success = run_command("pyinstaller --clean ScreenCatcher.spec", "构建可执行文件")
+    elif os.path.exists("ScreenCatcher-simple.spec"):
+        print("🔧 使用 ScreenCatcher-simple.spec 文件构建...")
+        build_success = run_command("pyinstaller --clean ScreenCatcher-simple.spec", "构建可执行文件")
+    
+    # 方法2: 使用命令行参数
+    if not build_success:
+        print("🔧 使用命令行参数构建...")
+        build_success = run_command(
+            "pyinstaller --onefile --windowed --name ScreenCatcher --clean src/screencatcher/ScreenCatcher.py",
+            "构建可执行文件"
+        )
+    
+    if not build_success:
         return False
     
     # 检查构建结果

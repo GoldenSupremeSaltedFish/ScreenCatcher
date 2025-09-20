@@ -2,13 +2,27 @@ import threading
 import tkinter as tk
 from PIL import ImageGrab
 from queue import Queue
-from win32 import win32gui, win32print
-from win32.lib import win32con
-from win32.win32api import GetSystemMetrics
+try:
+    import win32gui
+    import win32print
+    import win32con
+    from win32api import GetSystemMetrics
+    WIN32_AVAILABLE = True
+except ImportError:
+    WIN32_AVAILABLE = False
+    print("Warning: win32 modules not available. Some features may not work.")
 
 
 def get_real_resolution():
     """获取真实的分辨率"""
+    if not WIN32_AVAILABLE:
+        # Fallback to tkinter
+        root = tk.Tk()
+        w = root.winfo_screenwidth()
+        h = root.winfo_screenheight()
+        root.destroy()
+        return w, h
+    
     hDC = win32gui.GetDC(0)
     w = win32print.GetDeviceCaps(hDC, win32con.DESKTOPHORZRES)
     h = win32print.GetDeviceCaps(hDC, win32con.DESKTOPVERTRES)
@@ -17,6 +31,14 @@ def get_real_resolution():
 
 def get_screen_size():
     """获取缩放后的分辨率"""
+    if not WIN32_AVAILABLE:
+        # Fallback to tkinter
+        root = tk.Tk()
+        w = root.winfo_screenwidth()
+        h = root.winfo_screenheight()
+        root.destroy()
+        return w, h
+    
     w = GetSystemMetrics(0)
     h = GetSystemMetrics(1)
     return w, h
