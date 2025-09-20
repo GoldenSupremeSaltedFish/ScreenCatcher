@@ -54,52 +54,27 @@ jobs:
           pyinstaller --onefile --windowed --name ScreenCatcher --clean src/screencatcher/ScreenCatcher.py
         }
         
-    - name: Create release assets directory
-      run: |
-        mkdir release-assets
-        
-    - name: Copy executable to release directory
-      run: |
-        copy dist\ScreenCatcher.exe release-assets\
-        
-    - name: Create portable package
-      run: |
-        # Create a portable package with all necessary files
-        mkdir ScreenCatcher-Portable
-        copy dist\ScreenCatcher.exe ScreenCatcher-Portable\
-        copy README.md ScreenCatcher-Portable\
-        copy LICENSE.txt ScreenCatcher-Portable\
-        echo "ScreenCatcher v${{ github.ref_name }}" > ScreenCatcher-Portable\VERSION.txt
-        
-        # Create ZIP archive
-        powershell Compress-Archive -Path ScreenCatcher-Portable\* -DestinationPath release-assets\ScreenCatcher-Portable.zip -Force
-        
-    - name: Upload build artifacts
+    - name: Upload executable artifact
       uses: actions/upload-artifact@v4
       with:
         name: ScreenCatcher-Executable
-        path: |
-          release-assets/ScreenCatcher.exe
-          release-assets/ScreenCatcher-Portable.zip
+        path: dist/ScreenCatcher.exe
         retention-days: 30
         
     - name: Create Release (on tag)
       if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v2
       with:
-        files: |
-          release-assets/ScreenCatcher.exe
-          release-assets/ScreenCatcher-Portable.zip
+        files: dist/ScreenCatcher.exe
         body: |
           ## ScreenCatcher Windows Executable
           
-          ### Downloads:
-          - **ScreenCatcher.exe**: Standalone executable
-          - **ScreenCatcher-Portable.zip**: Portable package with documentation
+          ### Download:
+          - **ScreenCatcher.exe**: Standalone executable (no installation required)
           
           ### Usage:
-          1. Download and extract the files
-          2. Run `ScreenCatcher.exe`
+          1. Download `ScreenCatcher.exe`
+          2. Run the executable
           3. Use `Alt+Q` to capture and recognize QR codes
           4. Press `Esc` to exit
           

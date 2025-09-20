@@ -12,7 +12,6 @@
 
 每次构建会生成：
 - `ScreenCatcher.exe` - 独立可执行文件
-- `ScreenCatcher-Portable.zip` - 便携版压缩包
 
 ## 本地构建
 
@@ -98,7 +97,7 @@ pyinstaller --console ScreenCatcher.spec
 2. 提交代码
 3. 创建标签: `git tag v1.0.0`
 4. 推送标签: `git push origin v1.0.0`
-5. GitHub Actions 自动构建并发布 Release
+5. GitHub Actions 自动构建并发布 Release (只包含 exe 文件)
 
 ## 文件结构
 

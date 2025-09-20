@@ -78,24 +78,6 @@ def main():
         print(f"✅ 构建成功!")
         print(f"📁 可执行文件位置: {exe_path.absolute()}")
         print(f"📊 文件大小: {size_mb:.1f} MB")
-        
-        # 创建便携版
-        portable_dir = Path("ScreenCatcher-Portable")
-        if portable_dir.exists():
-            shutil.rmtree(portable_dir)
-        
-        portable_dir.mkdir()
-        shutil.copy2(exe_path, portable_dir / "ScreenCatcher.exe")
-        shutil.copy2("README.md", portable_dir / "README.md")
-        shutil.copy2("LICENSE.txt", portable_dir / "LICENSE.txt")
-        
-        with open(portable_dir / "VERSION.txt", "w", encoding="utf-8") as f:
-            f.write("ScreenCatcher - Local Build\n")
-            f.write(f"Python: {sys.version}\n")
-            f.write(f"Build Date: {__import__('datetime').datetime.now()}\n")
-        
-        print(f"📦 便携版已创建: {portable_dir.absolute()}")
-        
         return True
     else:
         print("❌ 构建失败 - 未找到可执行文件")
