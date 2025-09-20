@@ -40,17 +40,17 @@ jobs:
     - name: Build executable with PyInstaller
       run: |
         # 确保在正确的目录中
-        pwd
-        ls -la
+        Get-Location
+        Get-ChildItem
         # 检查文件是否存在
         if (Test-Path "ScreenCatcher.spec") {
-          echo "Using ScreenCatcher.spec"
+          Write-Host "Using ScreenCatcher.spec"
           pyinstaller --clean ScreenCatcher.spec
         } elseif (Test-Path "ScreenCatcher-simple.spec") {
-          echo "Using ScreenCatcher-simple.spec"
+          Write-Host "Using ScreenCatcher-simple.spec"
           pyinstaller --clean ScreenCatcher-simple.spec
         } else {
-          echo "No .spec file found, using command line options"
+          Write-Host "No .spec file found, using command line options"
           pyinstaller --onefile --windowed --name ScreenCatcher --clean src/screencatcher/ScreenCatcher.py
         }
         
