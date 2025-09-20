@@ -1,0 +1,105 @@
+name: Build Windows Executable
+
+on:
+  push:
+    branches: [ main, master ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main, master ]
+  release:
+    types: [ published ]
+
+permissions:
+  contents: read
+
+jobs:
+  build-exe:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+        pip install pyinstaller
+        pip install pillow pyzbar
+        
+    - name: Install Windows dependencies for pyzbar
+      run: |
+        # Install Visual C++ Redistributable (required for pyzbar)
+        choco install vcredist2015 -y
+        
+    - name: Build executable with PyInstaller
+      run: |
+        pyinstaller --clean ScreenCatcher.spec
+        
+    - name: Create release assets directory
+      run: |
+        mkdir release-assets
+        
+    - name: Copy executable to release directory
+      run: |
+        copy dist\ScreenCatcher.exe release-assets\
+        
+    - name: Create portable package
+      run: |
+        # Create a portable package with all necessary files
+        mkdir ScreenCatcher-Portable
+        copy dist\ScreenCatcher.exe ScreenCatcher-Portable\
+        copy README.md ScreenCatcher-Portable\
+        copy LICENSE.txt ScreenCatcher-Portable\
+        echo "ScreenCatcher v${{ github.ref_name }}" > ScreenCatcher-Portable\VERSION.txt
+        
+        # Create ZIP archive
+        powershell Compress-Archive -Path ScreenCatcher-Portable\* -DestinationPath release-assets\ScreenCatcher-Portable.zip -Force
+        
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ScreenCatcher-Executable
+        path: |
+          release-assets/ScreenCatcher.exe
+          release-assets/ScreenCatcher-Portable.zip
+        retention-days: 30
+        
+    - name: Create Release (on tag)
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          release-assets/ScreenCatcher.exe
+          release-assets/ScreenCatcher-Portable.zip
+        body: |
+          ## ScreenCatcher Windows Executable
+          
+          ### Downloads:
+          - **ScreenCatcher.exe**: Standalone executable
+          - **ScreenCatcher-Portable.zip**: Portable package with documentation
+          
+          ### Usage:
+          1. Download and extract the files
+          2. Run `ScreenCatcher.exe`
+          3. Use `Alt+Q` to capture and recognize QR codes
+          4. Press `Esc` to exit
+          
+          ### Features:
+          - Screenshot and QR code recognition
+          - Automatic browser opening for HTTP/HTTPS URLs
+          - Clean GUI interface
+          - Hotkey support (Alt+Q)
+          
+          ### System Requirements:
+          - Windows 10/11
+          - No additional dependencies required
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

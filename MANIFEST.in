@@ -1,0 +1,46 @@
+# Include necessary files
+include README.md
+include README.cn.md
+include LICENSE.txt
+include pyproject.toml
+
+# Include source code
+recursive-include src/screencatcher *.py
+
+# Exclude unnecessary files
+exclude *.pyc
+exclude *.pyo
+exclude *.pyd
+exclude __pycache__
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude * *.so
+recursive-exclude * *.dylib
+recursive-exclude * *.dll
+
+# Exclude development files
+exclude .gitignore
+exclude .gitattributes
+exclude .github/
+exclude tests/
+exclude docs/
+exclude examples/
+
+# Exclude build artifacts
+exclude build/
+exclude dist/
+exclude *.egg-info/
+exclude .pytest_cache/
+exclude .coverage
+exclude htmlcov/
+
+# Exclude IDE files
+exclude .vscode/
+exclude .idea/
+exclude *.swp
+exclude *.swo
+exclude *~
+
+# Exclude OS files
+exclude .DS_Store
+exclude Thumbs.db
