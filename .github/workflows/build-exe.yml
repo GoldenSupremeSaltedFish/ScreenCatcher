@@ -8,6 +8,7 @@ on:
     branches: [ main, master ]
   release:
     types: [ published ]
+  workflow_dispatch:  # 允许手动触发
 
 permissions:
   contents: read
@@ -54,12 +55,26 @@ jobs:
           pyinstaller --onefile --windowed --name ScreenCatcher --clean src/screencatcher/ScreenCatcher.py
         }
         
+    - name: Verify build output
+      run: |
+        Write-Host "Checking build output..."
+        if (Test-Path "dist/ScreenCatcher.exe") {
+          $fileSize = (Get-Item "dist/ScreenCatcher.exe").Length / 1MB
+          Write-Host "✅ ScreenCatcher.exe found - Size: $([math]::Round($fileSize, 2)) MB"
+          Get-ChildItem "dist/" -Name
+        } else {
+          Write-Host "❌ ScreenCatcher.exe not found!"
+          Get-ChildItem "dist/" -ErrorAction SilentlyContinue
+          exit 1
+        }
+        
     - name: Upload executable artifact
       uses: actions/upload-artifact@v4
       with:
         name: ScreenCatcher-Executable
         path: dist/ScreenCatcher.exe
         retention-days: 30
+        if-no-files-found: error
         
     - name: Create Release (on tag)
       if: startsWith(github.ref, 'refs/tags/')
